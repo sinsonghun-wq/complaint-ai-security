@@ -1,0 +1,13 @@
+title = "ComplaintAI publication secret scan"
+
+[extend]
+useDefault = true
+
+# Public BGE-M3 tokenizer integrity digest, not an authentication secret.
+# Match one exact value on one path; all other rules and paths remain active.
+[[allowlists]]
+description = "Pinned public tokenizer SHA-256 integrity digest"
+condition = "AND"
+paths = ['''(^|/)dcm-back/app/services/rag_splitting\.py$''']
+regexTarget = "secret"
+regexes = ['''^21106b6d7dab2952c1d496fb21d5dc9db75c28ed361a05f5020bbba27810dd08$''']

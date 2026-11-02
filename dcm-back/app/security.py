@@ -1,0 +1,91 @@
+from __future__ import annotations
+
+import base64
+import hashlib
+import hmac
+import json
+import secrets
+import time
+import uuid
+from typing import Any
+
+from fastapi import Header, HTTPException
+
+from .db import fetch_one
+from .settings import AUTH_TOKEN_SECRET
+
+
+def uuid4() -> str:
+    return str(uuid.uuid4())
+
+
+def password_hash(password: str, salt_hex: str | None = None) -> tuple[str, str]:
+    salt_hex = salt_hex or secrets.token_hex(16)
+    # Node 구현은 randomBytes().toString("hex") 결과를 다시 bytes로 풀지 않고
+    # 문자열 salt 그대로 crypto.scrypt()에 넘긴다. 기존 계정과 호환되도록 UTF-8 값을 쓴다.
+    encoded = hashlib.scrypt(password.encode(), salt=salt_hex.encode(), n=16384, r=8, p=1, dklen=64)
+    return salt_hex, encoded.hex()
+
+
+def verify_password(password: str, salt_hex: str, expected_hex: str) -> bool:
+    _, actual = password_hash(password, salt_hex)
+    return hmac.compare_digest(actual, expected_hex)
+
+
+def _b64(value: bytes) -> str:
+    return base64.urlsafe_b64encode(value).decode().rstrip("=")
+
+
+def _unb64(value: str) -> bytes:
+    return base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+
+
+def issue_token(actor: dict[str, Any]) -> str:
+    payload = {"sub": str(actor["id"]), "owner_id": str(actor["owner_id"]), "role": actor["account_role"], "department_id": actor.get("department_id"), "exp": int(time.time() * 1000) + 8 * 60 * 60 * 1000}
+    body = _b64(json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode())
+    signature = _b64(hmac.new(AUTH_TOKEN_SECRET.encode(), body.encode(), hashlib.sha256).digest())
+    return f"{body}.{signature}"
+
+
+def read_token(value: str | None) -> dict[str, Any] | None:
+    try:
+        if not isinstance(value, str) or len(value) > 8192:
+            return None
+        body, signature = (value or "").removeprefix("Bearer ").split(".")
+        expected = _b64(hmac.new(AUTH_TOKEN_SECRET.encode(), body.encode(), hashlib.sha256).digest())
+        if not hmac.compare_digest(signature, expected):
+            return None
+        payload = json.loads(_unb64(body))
+        if not isinstance(payload, dict) or payload.get('role') not in ('admin', 'user'):
+            return None
+        if any(not isinstance(payload.get(key), str) or not payload[key] for key in ('sub', 'owner_id')):
+            return None
+        if not isinstance(payload.get('exp'), int) or isinstance(payload['exp'], bool) or payload['exp'] <= int(time.time() * 1000):
+            return None
+        return payload
+    except Exception:
+        return None
+
+
+def actor_from_auth(authorization: str | None = Header(default=None)) -> dict[str, Any]:
+    actor = read_token(authorization)
+    if not actor:
+        raise HTTPException(401, "로그인이 필요합니다.")
+    user = current_account(actor)
+    return {"sub": str(user["id"]), "owner_id": str(user["owner_id"]), "role": user["account_role"], "department_id": user.get("department_id"), "department_name": user.get("department_name")}
+
+
+def current_account(actor: dict[str, Any]) -> dict[str, Any]:
+    user = fetch_one("""SELECT u.id,u.owner_id,u.username,u.display_name,u.account_role,u.department_id,
+        d.name AS department_name,u.password_salt,u.password_hash
+        FROM app_users u LEFT JOIN departments d ON d.id=u.department_id WHERE u.id=%s""", (actor["sub"],))
+    if not user:
+        raise HTTPException(401, "계정을 찾을 수 없습니다.")
+    return user
+
+
+def public_user(user: dict[str, Any]) -> dict[str, Any]:
+    name = user.get("display_name") or user["username"]
+    if user["account_role"] == "admin" and user.get("department_name"):
+        name = f"{user['department_name']} 관리자"
+    return {"id": str(user["id"]), "owner_id": str(user["owner_id"]), "username": user["username"], "name": name, "role": user["account_role"], "department_id": user.get("department_id"), "department_name": user.get("department_name"), "can_run_global_cleanup": False}

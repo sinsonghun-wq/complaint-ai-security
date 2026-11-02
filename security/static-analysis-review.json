@@ -1,0 +1,124 @@
+{
+  "reviewed_sql": [
+    {
+      "path": "dcm-back\\app\\complaint_search.py",
+      "line": 95,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\trash.py",
+      "line": 41,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\trash.py",
+      "line": 47,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\rag_imports.py",
+      "line": 77,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\rag_imports.py",
+      "line": 71,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\rag_imports.py",
+      "line": 110,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\rag_imports.py",
+      "line": 127,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\rag_imports.py",
+      "line": 58,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\rag.py",
+      "line": 54,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\rag.py",
+      "line": 63,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 143,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 102,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 103,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 154,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 163,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 401,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 410,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\routers\\complaints.py",
+      "line": 280,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    },
+    {
+      "path": "dcm-back\\app\\dedup.py",
+      "line": 90,
+      "rule": "B608",
+      "reason": "Only server-defined column/filter/limit fragments are interpolated; external values use bound parameters."
+    }
+  ],
+  "other_notes": [
+    "SHA-1 is only deterministic data splitting/sampling; usedforsecurity=False preserves existing grouping.",
+    "BGE tokenizer uses a fixed HTTPS revision and verifies SHA-256.",
+    "Model evaluation allows only HTTP(S).",
+    "Remote model downloads require a reviewed 40-character immutable revision."
+  ]
+}

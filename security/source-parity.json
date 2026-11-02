@@ -1,0 +1,23 @@
+{
+  "source_commit": "a5d50b657fd9000b47bab0a490b6a1396a0d1c87",
+  "frontend_assets_byte_identical": 23,
+  "security_semantic_app_changes": [
+    "dcm-back/app/agent.py",
+    "dcm-back/app/ai.py",
+    "dcm-back/app/embeddings.py",
+    "dcm-back/app/routers/complaints.py",
+    "dcm-back/app/security.py",
+    "dcm-back/app/settings.py"
+  ],
+  "comments_only_app_changes": [
+    "dcm-back/app/complaint_search.py",
+    "dcm-back/app/dedup.py",
+    "dcm-back/app/rag.py",
+    "dcm-back/app/routers/rag_imports.py",
+    "dcm-back/app/routers/trash.py",
+    "dcm-back/app/services/rag_splitting.py"
+  ],
+  "prior_credential_material_matches": 0,
+  "tracked_source_files_checked": 159,
+  "full_environment_parity": "Private data/models and original history intentionally excluded; see PUBLICATION_CHANGES.md."
+}
